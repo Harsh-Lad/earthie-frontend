@@ -45,7 +45,7 @@ function Navbar() {
         <div className="left">
 
           <Link href={'/'}>
-            <Image alt='logo' unoptimized src={logo} />
+            <Image alt='logo'  src={logo} />
           </Link>
         </div>
         <div className="center hidden md:flex absolute left-1/2 translate-x-[-50%]">
