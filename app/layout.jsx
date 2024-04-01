@@ -9,7 +9,7 @@ import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Earthie",
+  title: "Earthie Fashion",
   description: "Discover the latest trends and elevate your style with Earthie. Explore our vibrant collection of fashion-forward clothing and accessories. Shop now for stylish looks that inspire confidence and creativity. Wear your identity",
 };
 
