@@ -77,7 +77,7 @@ function Login() {
 
   return (
     <div className='w-screen h-screen relative'>
-      <Image unoptimized src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
+      <Image  src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
       <div className="form w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
         <p className="text-4xl font-bold">Welcome Back !</p>
         <p className="text-md font-medium">Get back into your account...</p>

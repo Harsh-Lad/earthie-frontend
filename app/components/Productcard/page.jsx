@@ -264,7 +264,6 @@ function Productcard({ product }) {
             {product && (
                 <div className='h-96 w-80 shadow bg-[#f2f2f2] relative overflow-hidden my-4 mx-2'>
                     <Image
-                        unoptimized
                         alt=''
                         src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`}
                         onClick={() => { router.push(`/product?productId=${product.id}`) }}

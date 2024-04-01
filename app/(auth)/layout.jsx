@@ -4,7 +4,7 @@ import Navbar from "../components/navbar/page";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-    title: "Earthie - Authentication",
+    title: "Earthie Fashion - Authentication",
     description: "Join Earthie today and become part of a thriving fashion community. Sign up now to discover the latest trends, access exclusive offers, and embark on an exciting fashion journey. Create your account and elevate your style with Earthie's curated collection of clothing and accessories.",
 };
 

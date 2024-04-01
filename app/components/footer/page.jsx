@@ -10,7 +10,7 @@ function Footer() {
         <div className="first w-4/4 md:w-1/4 pl-10">
           <div className="top flex flex-col items-start">
             <div className="flex flex-col items-center">
-              <Image unoptimized src={logo} alt='' className='' />
+              <Image src={logo} alt='' className='' />
               <p className="text-3xl font-bold">Earthie.in</p>
             </div>
             <p className='w-3/4 md:w-2/3 mt-4'>Unleash your fashion game with state of the art Street Wear collection brought to you by Earthie Fashion. Wear your Identity.</p>

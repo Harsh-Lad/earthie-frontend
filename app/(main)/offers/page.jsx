@@ -31,8 +31,8 @@ function Offers() {
   return (
     <div className='w-screen min-h-screen  overflow-x-clip'>
       <div className="header">
-        <Image unoptimized src={offer} alt='collections header' className='w-full h-auto object-cover hidden md:block' />
-        <Image unoptimized src={offerM} alt='collections header' className='w-full h-auto object-cover block md:hidden' />
+        <Image src={offer} alt='collections header' className='w-full h-auto object-cover hidden md:block' />
+        <Image src={offerM} alt='collections header' className='w-full h-auto object-cover block md:hidden' />
       </div>
       <div className="px-5 md:px-24 flex flex-wrap justify-center md:justify-start">
         {products.length === 0 ? (

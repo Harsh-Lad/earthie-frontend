@@ -73,8 +73,8 @@ function Cart() {
   return (
     <div className='w-screen min-h-screen'>
       <div className="header">
-        <Image unoptimized src={cart} alt='cart header' className='w-full h-auto object-cover hidden md:block' />
-        <Image unoptimized src={cartM} alt='cart header' className='w-full h-auto object-cover block md:hidden' />
+        <Image src={cart} alt='cart header' className='w-full h-auto object-cover hidden md:block' />
+        <Image src={cartM} alt='cart header' className='w-full h-auto object-cover block md:hidden' />
       </div>
       {cartItems && cartItems.length > 0 && (
         <div className="px-5 md:px-24 flex items-center justify-between">

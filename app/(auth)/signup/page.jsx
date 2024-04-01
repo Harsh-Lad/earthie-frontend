@@ -78,7 +78,7 @@ function Signup() {
 
     return (
         <div className='w-screen h-screen relative'>
-            <Image unoptimized src={signup} alt='' className='h-1/2 w-screen object-cover' />
+            <Image src={signup} alt='' className='h-1/2 w-screen object-cover' />
             <div className="form w-[435px] h-auto shadow absolute bottom-0 bg-slate-50  rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
                 <p className="text-4xl font-bold">Welcome to Earthie !</p>
                 <p className="text-md font-medium">Join the Earthie Community...</p>

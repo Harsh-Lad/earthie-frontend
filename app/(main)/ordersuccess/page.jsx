@@ -42,7 +42,7 @@ function OrderSuccess() {
     return (
         <div className='min-h-screen py-28 container'>
             <div className="top flex flex-col items-center">
-                <Image unoptimized alt='success' src={success} width={175} height={175} />
+                <Image alt='success' src={success} width={175} height={175} />
                 <p className="text-3xl font-semibold pt-8">Order Placed Successfully!</p>
                 <p className="text-lg font-medium pt-2  w-3/5 text-center">Thank you for choosing us. Keep and eye on your email for further updates on your order status.</p>
                 <Button className="bg-[#030203] text-xl px-12 py-6 mt-10" asChild>

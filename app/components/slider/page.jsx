@@ -43,7 +43,6 @@ function Slider() {
                         slides.map((slide, index) => (
                             <CarouselItem key={index}>
                                 <Image
-                                    unoptimized
                                     alt={`slide ${index + 1}`}
                                     src={`${process.env.NEXT_PUBLIC_HOST}${slide.desktopImage}`}
                                     className='w-full h-auto object-cover hidden md:block'
@@ -51,7 +50,6 @@ function Slider() {
                                     height={700}
                                 />
                                 <Image
-                                    unoptimized
                                     alt={`slide ${index + 1}`}
                                     src={`${process.env.NEXT_PUBLIC_HOST}${slide.mobileImage}`}
                                     className='w-full h-auto object-cover  md:hidden bg-[#f2f2f2] flex items-center justify-center'

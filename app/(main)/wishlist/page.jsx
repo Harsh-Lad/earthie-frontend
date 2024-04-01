@@ -49,8 +49,8 @@ function Wishlist() {
   return (
     <div className='w-screen min-h-screen'>
       <div className="header">
-        <Image unoptimized src={wishlist} alt='collections header' className='w-full h-auto object-cover hidden md:block' />
-        <Image unoptimized src={wishlistM} alt='collections header' className='w-full h-auto object-cover block md:hidden' />
+        <Image src={wishlist} alt='collections header' className='w-full h-auto object-cover hidden md:block' />
+        <Image src={wishlistM} alt='collections header' className='w-full h-auto object-cover block md:hidden' />
       </div>
       <div className="px-5 md:px-24 flex flex-wrap justify-center md:justify-start">
 
