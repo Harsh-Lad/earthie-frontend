@@ -196,7 +196,7 @@ function Product() {
         <div className="">
             <div className=' w-4/4 pt-24 flex flex-col md:flex-row pb-12 min-h-screen p-4'>
                 <div className="left w-4/4 md:w-3/5 lg:w-2/4 text-slate-100 flex flex-col lg:flex-row gap-3">
-                    <div className="w-[100%] lg:w-[75%] left bg-slate-400  h-[100%] mainImage">
+                    <div className="w-[100%] lg:w-[75%] left bg-slate-100  h-[100%] mainImage">
                         <Image src={`${process.env.NEXT_PUBLIC_HOST}${mainImage}`} alt='' width={1080} height={720} className='h-full w-full object-cover' />
                     </div>
                     <div className="flex flex-row w-[100%] lg:w-[25%] lg:flex-col gap-3 supportImage">
