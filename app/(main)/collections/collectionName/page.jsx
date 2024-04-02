@@ -38,7 +38,7 @@ function CollectionName() {
         <Image unoptimized src={collectionM} alt='collections header' className='w-full h-auto object-cover block md:hidden' />
       </div>
       <p className="text-4xl py-12 font-semibold text-[#030203] capitalize text-center">{decodeURIComponent(collection_name)}</p>
-      <div className="px-24 flex flex-wrap">
+      <div className=" md:px-24 flex justify-center md:justify-start flex-wrap">
         {
           products.map((product) => (
             <ProductCard product={product} key={product.id} />
