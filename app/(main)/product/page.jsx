@@ -195,7 +195,7 @@ function Product() {
     return (
         <div className="">
             <div className=' w-4/4 pt-24 flex flex-col md:flex-row pb-12 min-h-screen p-4'>
-                <div className="left w-4/4 md:w-3/5 lg:w-2/4 text-slate-800 flex flex-col lg:flex-row gap-3">
+                <div className="left w-4/4 md:w-3/5 lg:w-2/4 text-slate-100 flex flex-col lg:flex-row gap-3">
                     <div className="w-[100%] lg:w-[75%] left bg-slate-400  h-[100%] mainImage">
                         <Image src={`${process.env.NEXT_PUBLIC_HOST}${mainImage}`} alt='' width={1080} height={720} className='h-full w-full object-cover' />
                     </div>
@@ -227,7 +227,7 @@ function Product() {
                         </div>
 
                         :
-                        <p className="text-md font-semibold text-[#030203] lg:mt-4 lg:text-3xl">₹1199</p>
+                        <p className="text-md font-semibold text-[#030203] lg:mt-4 lg:text-3xl">₹{product.price}</p>
 
                     }
                     <p className="desc w-5/5 lg:w-3/5 py-3 pb-6 text-sm lg:mt-4 lg:text-md">
@@ -258,7 +258,7 @@ function Product() {
 
                     <div className="cta flex gap-2 flex-col lg:flex-row">
                         <Button className="px-10 mt-4" onClick={() => { addToCart(product.id, product.productName, selectedSize) }}>Add to Cart <ArrowRight /></Button>
-                        <Button variant="secondary" className="px-10 mt-4">Add to Wishlist <Heart className='ml-2' /></Button>
+                        {/* <Button variant="secondary" className="px-10 mt-4">Add to Wishlist <Heart className='ml-2' /></Button> */}
                     </div>
                 </div>
 
