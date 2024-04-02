@@ -93,7 +93,7 @@ function Checkout() {
                     lastName: address.lastName,
                     email: address.email,
                     phone: address.phone,
-                    street_address: address.addressLine1 + address.addressLine2,
+                    street_address: address.addressLine1 + ' ' + address.addressLine2,
                     city: address.city,
                     state: address.state,
                     postal_code: address.pincode,
