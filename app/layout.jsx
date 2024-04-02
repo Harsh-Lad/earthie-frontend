@@ -4,7 +4,6 @@ import Navbar from "./components/navbar/page";
 import Footer from "./components/footer/page";
 import Providers from "@/redux/Providers";
 import Script from 'next/script'
-import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] });
 
