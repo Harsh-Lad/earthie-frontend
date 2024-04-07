@@ -72,6 +72,7 @@ function Checkout() {
         if (price > 0 && orderId !== '') {
             pay(); // Call pay() only when price and orderId are successfully set
         }
+        console.log(orderId);
     }, [price, orderId]);
 
     const createOrder = async () => {

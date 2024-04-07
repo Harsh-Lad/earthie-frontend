@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '@/redux/auth/authSlice';
 import { useRouter } from 'next/navigation';
 
-function Login() {
+function ForgotPass() {
   const [email, setEmail] = useState('');
   const router = useRouter();
 
@@ -52,8 +52,8 @@ function Login() {
   return (
     <div className='w-screen h-screen relative'>
       <Image unoptimized src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
-      <div className="form w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
-        <p className="text-4xl font-bold">Forgot Password !</p>
+      <div className="form w-full sm:w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
+        <p className="text-[26px] sm:text-4xl  font-bold">Forgot Password !</p>
         <p className="text-md font-medium">Enter your registerd email...</p>
 
         <div className="grid w-full max-w-sm items-center gap-1.5 mt-5">
@@ -78,4 +78,4 @@ function Login() {
   )
 }
 
-export default Login;
+export default ForgotPass;

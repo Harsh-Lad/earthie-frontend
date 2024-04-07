@@ -59,6 +59,7 @@ function Search() {
                 <Input placeholder="Search" className="border-none rounded-full focus-visible:ring-0 focus-visible:ring-white" value={searchQuery} onChange={handleInputChange} />
             </div>
             <div className="px-5 md:px-24 flex flex-wrap justify-center md:justify-start pt-36">
+                {searchResults.length <= 0 && <p className='text-3xl font-semibold text-[#030203] mt-5'>No products found try again later.</p>}
                 {searchResults.map(result => (
                     <ProductCard key={result.id} product={result} />
                 ))}

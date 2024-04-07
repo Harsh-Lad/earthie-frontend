@@ -1,5 +1,5 @@
 'use client'
-import React, { Suspense, useState } from 'react';
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
@@ -75,17 +75,17 @@ function SetPassword() {
   return (
     <div className='w-screen h-screen relative'>
       <Image unoptimized src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
-      <div className="form w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
-        <p className="text-4xl font-bold">Set New Password !</p>
+      <div className="form w-full sm:w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
+        <p className="text-[26px] sm:text-4xl  font-bold">Set New Password !</p>
         <p className="text-md font-medium">Get back into your account...</p>
 
 
-        <div className="grid w-full max-w-sm items-center gap-1.5 mt-3">
+        <div className="grid w-full items-center gap-1.5 mt-3">
           <Label htmlFor="password">Password</Label>
           <Input type={showPassword ? "text" : "password"}
             id="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
         </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5 mt-3">
+        <div className="grid w-full items-center gap-1.5 mt-3">
           <Label htmlFor="passwordc">Confirm Password</Label>
           <Input type={showPassword ? "text" : "password"}
             id="confirmPassword" placeholder="Password" value={formData.confirmPassword} onChange={handleChange} required />
@@ -111,12 +111,4 @@ function SetPassword() {
   )
 }
 
-function SuspendedSetPassword() {
-  return (
-      <Suspense fallback={<div>Loading...</div>}>
-          <SetPassword/>
-      </Suspense>
-  );
-}
-
-export default SuspendedSetPassword;
+export default SetPassword;

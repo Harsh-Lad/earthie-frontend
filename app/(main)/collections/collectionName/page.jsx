@@ -50,12 +50,4 @@ function CollectionName() {
   )
 }
 
-function SuspendedCollectionName() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CollectionName />
-    </Suspense>
-  );
-}
-
-export default SuspendedCollectionName
+export default CollectionName

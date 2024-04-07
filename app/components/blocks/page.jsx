@@ -1,23 +1,43 @@
 'use client'
+import { Skeleton } from '@/components/ui/skeleton';
 import axios from 'axios';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 
 function Blocks() {
     const [blocks, setBlocks] = useState({})
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
 
     async function getBlocks() {
         try {
             const response = await axios.get(process.env.NEXT_PUBLIC_HOST + '/api/blocks/');
             const data = response.data
             setBlocks(data);
+            setIsLoading(false);
         } catch (error) {
             console.error(error);
+            setError(error)
+            isLoading(false)
         }
     }
     useEffect(() => {
         getBlocks()
     }, [])
+
+    if (isLoading){
+        return(
+            <div className="row w-4/4 flex flex-col md:flex-row p-3 gap-2">
+                <Skeleton className="w-4/4 md:w-2/4 aspect-square bg-slate-200">
+
+                </Skeleton>
+                <Skeleton className="w-4/4 md:w-2/4 aspect-square bg-slate-200">
+
+                </Skeleton>
+            </div>
+        )
+    }
     return (
         <div className="row w-4/4 flex flex-col md:flex-row p-3 gap-2">
             {blocks.length > 0 && (

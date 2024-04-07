@@ -78,15 +78,15 @@ function Login() {
   return (
     <div className='w-screen h-screen relative'>
       <Image  src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
-      <div className="form w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
-        <p className="text-4xl font-bold">Welcome Back !</p>
+      <div className="form w-full sm:w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
+        <p className="text-[26px] sm:text-4xl  font-bold">Welcome Back !</p>
         <p className="text-md font-medium">Get back into your account...</p>
 
-        <div className="grid w-full max-w-sm items-center gap-1.5 mt-5">
+        <div className="grid w-full items-center gap-1.5 mt-5">
           <Label htmlFor="email">Email</Label>
           <Input type="email" id="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
         </div>
-        <div className="grid w-full max-w-sm items-center gap-1.5 mt-3">
+        <div className="grid w-full items-center gap-1.5 mt-3">
           <Label htmlFor="password">Password</Label>
           <Input type={showPassword ? "text" : "password"}
             id="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
@@ -103,7 +103,7 @@ function Login() {
           </label>
         </div>
 
-        <div className="flex items-center justify-between my-2">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between  my-2">
           <Link href={'/forgot-password'} className="text-sm font-medium mt-2">Forgot your password ?</Link>
           <Link href={'/signup'} className="text-sm font-medium mt-2">Create an account</Link>
         </div>

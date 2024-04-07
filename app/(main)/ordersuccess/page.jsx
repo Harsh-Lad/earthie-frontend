@@ -5,7 +5,6 @@ import success from '@/public/success.webp'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react'
 
 function OrderSuccess() {
     const [orderStatus, setOrderStatus] = useState('');
@@ -54,11 +53,5 @@ function OrderSuccess() {
         </div>
     )
 }
-function SuspendedOrderSuccess() {
-    return (
-        <Suspense fallback={<div>Loading...</div>}>
-            <OrderSuccess />
-        </Suspense>
-    );
-}
-export default SuspendedOrderSuccess
+
+export default OrderSuccess

@@ -8,22 +8,34 @@ import {
 import Autoplay from "embla-carousel-autoplay"
 import Image from 'next/image'
 import axios from 'axios'
+import { Skeleton } from '@/components/ui/skeleton'
 
 function Slider() {
     const [slides, setSlides] = useState({})
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     async function getSlides() {
         try {
             const response = await axios.get(process.env.NEXT_PUBLIC_HOST + '/api/slides/');
             const data = response.data
             setSlides(data);
+            setIsLoading(false);
         } catch (error) {
+            setError(error);
+            setIsLoading(false);
             console.error(error);
         }
     }
     useEffect(() => {
         getSlides()
     }, [])
+
+    if (isLoading){
+        return(
+            <Skeleton className="w-full h-[70vh] bg-slate-200" />
+        )
+    }
 
     return (
         <div className="">
