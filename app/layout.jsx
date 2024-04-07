@@ -4,6 +4,8 @@ import Navbar from "./components/navbar/page";
 import Footer from "./components/footer/page";
 import Providers from "@/redux/Providers";
 import Script from 'next/script'
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +19,8 @@ export default function RootLayout({ children }) {
     <>
       <html lang="en">
         <body className={inter.className + ' overflow-x-clip'}>
+          <Analytics/>
+          <SpeedInsights/>
           <Providers>
             <Navbar />
             {children}
