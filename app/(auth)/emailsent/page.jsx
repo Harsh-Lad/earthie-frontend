@@ -1,7 +1,7 @@
 'use client'
 import { Mail } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 function EmailSent() {
     
@@ -25,5 +25,11 @@ function EmailSent() {
     )
 }
 
-
-export default EmailSent
+function SuspendedEmailSent() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <EmailSent/>
+        </Suspense>
+    );
+}
+export default SuspendedEmailSent

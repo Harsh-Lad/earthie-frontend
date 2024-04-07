@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
@@ -111,4 +111,11 @@ function SetPassword() {
   )
 }
 
-export default SetPassword;
+function SuspendedSetPassword() {
+  return (
+      <Suspense fallback={<div>Loading...</div>}>
+          <SetPassword/>
+      </Suspense>
+  );
+}
+export default SuspendedSetPassword;

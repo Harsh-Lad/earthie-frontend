@@ -64,5 +64,11 @@ function VerifyEmail() {
     )
 }
 
-
-export default VerifyEmail
+function SuspendedVerifyEmail() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <VerifyEmail/>
+        </Suspense>
+    );
+}
+export default SuspendedVerifyEmail
