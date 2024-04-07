@@ -12,20 +12,20 @@ function Productcard({ product }) {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
     const [size, setSize] = useState('')
-    const [anonymousId, setAnonymousId] = useState(null)
-    const [token, setToken] = useState(null)
-    // const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
-    // const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    // const [anonymousId, setAnonymousId] = useState(null)
+    // const [token, setToken] = useState(null)
+    const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const auth = useSelector((state) => state.auth.isLoggedIn)
     const router = useRouter()
 
     useEffect(() => {
-        setAnonymousId(localStorage.getItem('anonymous_id'));
-        setToken(localStorage.getItem('token'));
     }, [])
 
     const fetchWishlist = async () => {
-        try {
+        // setAnonymousId(localStorage.getItem('anonymous_id'));
+        // setToken(localStorage.getItem('token'));
+        // try {
             let url;
             if (auth) {
                 url = `${process.env.NEXT_PUBLIC_HOST}/api/user-wishlist/`;
@@ -34,7 +34,7 @@ function Productcard({ product }) {
             } else {
                 throw new Error('Authentication token or anonymous ID not provided.');
             }
-
+            console.log(token, anonymousId);
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -43,6 +43,7 @@ function Productcard({ product }) {
                 },
             });
 
+            console.log(response);
             if (!response.ok) {
                 throw new Error('Failed to fetch wishlist items');
             }
@@ -53,10 +54,10 @@ function Productcard({ product }) {
             // Check if the product exists in the wishlist
             const productIds = data.map(item => item.product.id);
             setIsInWishlist(productIds.includes(product.id));
-            console.log(isInWishlist);
-        } catch (error) {
-            console.error('Failed to fetch wishlist items:', error);
-        }
+            console.log(productIds);
+        // } catch (error) {
+        //     console.error('Failed to fetch wishlist items:', error);
+        // }
     };
 
 
@@ -147,7 +148,6 @@ function Productcard({ product }) {
     async function addToWishlistAnonymous(productId, productName) {
         try {
 
-
             let anonymousId = localStorage.getItem('anonymous_id');
             const requestBody = { product_id: productId };
 
@@ -155,7 +155,6 @@ function Productcard({ product }) {
                 requestBody.anonymous_id = anonymousId;
             }
 
-            console.log(requestBody);
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/add_to_wishlist_anonymous/`, {
                 method: 'POST',
@@ -165,7 +164,6 @@ function Productcard({ product }) {
                 body: JSON.stringify(requestBody),
             });
 
-            console.log(response);
             if (response.status == 400) {
                 // throw new Error('Failed to add product to wishlist');
                 toast.success(`${productName} already in wishlist`);
@@ -208,7 +206,6 @@ function Productcard({ product }) {
             const data = await response.json();
             const productIds = data.cart_items.map(item => item.product.id);
             setIsInCart(productIds.includes(product.id));
-            console.log(isInCart);
             const cartItem = data.cart_items.find(item => item.product.id === product.id);
             // Extract the size if the cart item is found
             if (cartItem) {
@@ -223,13 +220,10 @@ function Productcard({ product }) {
     async function removeFromCart(product_id, size) {
         try {
             let url;
-
-
-
             const token = localStorage.getItem('token');
             const anonymousId = localStorage.getItem('anonymous_id');
 
-            if (token && typeof window !== 'undefined') {
+            if (token) {
                 url = `${process.env.NEXT_PUBLIC_HOST}/api/remove-from-cart-authenticated/`;
             } else if (anonymousId) {
                 url = `${process.env.NEXT_PUBLIC_HOST}/api/remove-from-cart-anonymous/`;
