@@ -7,9 +7,8 @@ import collectionM from '@/public/collectionsM.png'
 import ProductCard from '@/app/components/Productcard/page'
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react'
+
 function CollectionName() {
-
-
   const searchParams = useSearchParams();
   const collection_name = searchParams.get('collection_name');
   const [products, setProducts] = useState([])
@@ -50,4 +49,12 @@ function CollectionName() {
   )
 }
 
-export default CollectionName
+function SuspendedCollectionName() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CollectionName />
+    </Suspense>
+  );
+}
+
+export default SuspendedCollectionName

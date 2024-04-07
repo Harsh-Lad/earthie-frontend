@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 function Product() {
     const [product, setProduct] = useState(null);
@@ -275,5 +276,12 @@ function Product() {
     )
 }
 
+function SuspendedProduct() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <Product />
+        </Suspense>
+    );
+}
 
-export default Product
+export default SuspendedProduct
