@@ -12,12 +12,17 @@ function Productcard({ product }) {
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
     const [size, setSize] = useState('')
+    const [anonymousId, setAnonymousId] = useState(null)
+    const [token, setToken] = useState(null)
     // const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
-    const anonymousId = localStorage.getItem('anonymous_id');
     // const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    const token = localStorage.getItem('token');
     const auth = useSelector((state) => state.auth.isLoggedIn)
     const router = useRouter()
+
+    useEffect(() => {
+        setAnonymousId(localStorage.getItem('anonymous_id'));
+        token(localStorage.getItem('token'));
+    }, [])
 
     const fetchWishlist = async () => {
         try {
