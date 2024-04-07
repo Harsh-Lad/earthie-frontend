@@ -21,7 +21,7 @@ function Productcard({ product }) {
 
     useEffect(() => {
         setAnonymousId(localStorage.getItem('anonymous_id'));
-        token(localStorage.getItem('token'));
+        setToken(localStorage.getItem('token'));
     }, [])
 
     const fetchWishlist = async () => {
