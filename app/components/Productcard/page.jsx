@@ -6,25 +6,19 @@ import { Heart } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 function Productcard({ product }) {
-    const [wishlistItems, setWishlistItems] = useState([]);
+    const [wishlistItems, setWishlistItems] = useState([])
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
     const [size, setSize] = useState('')
-    // const [anonymousId, setAnonymousId] = useState(null)
-    // const [token, setToken] = useState(null)
     const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const auth = useSelector((state) => state.auth.isLoggedIn)
     const router = useRouter()
 
-    useEffect(() => {
-    }, [])
-
     const fetchWishlist = async () => {
-        // setAnonymousId(localStorage.getItem('anonymous_id'));
-        // setToken(localStorage.getItem('token'));
         // try {
             let url;
             if (auth) {
@@ -87,8 +81,10 @@ function Productcard({ product }) {
                 body: JSON.stringify({ product_id: product.id, anonymous_id: anonymousId }),
             });
 
-            if (!response.ok) {
+            if (response) {
+                console.log(response);
                 throw new Error('Failed to remove product from wishlist');
+
             }
 
             toast.success(`${product.productName} removed from wishlist`);
@@ -259,11 +255,56 @@ function Productcard({ product }) {
         }
     }
 
+    // to be continued 
+
+    // useEffect(() => {
+    //     let urlWishList;
+    //     let urlCart;
+    //     if (auth) {
+    //         urlWishList = `${process.env.NEXT_PUBLIC_HOST}/api/user-wishlist/`;
+    //         urlCart = `${process.env.NEXT_PUBLIC_HOST}/api/get-user-cart-items/`;
+    //         fetchWishlist(urlWishList)
+    //         fetchCartItems(urlCart)
+    //     }
+    //     else if (anonymousId != null) {
+    //         urlWishList = `${process.env.NEXT_PUBLIC_HOST}/api/anonymous-wishlist/${anonymousId}/`
+    //         urlCart = `${process.env.NEXT_PUBLIC_HOST}/api/get-anonymous-cart-items/${anonymousId}/`;
+    //         fetchWishlist(urlWishList)
+    //         fetchCartItems(urlCart)
+    //     }
+    // }, [])
+
+
+    // async function fetchWishlist(url) {
+    //     // if auth then add token to the bearer token or leave empty and fetch the url 
+    //     // fetch using axios give me the code
+    //     try {
+    //         const response = await axios.get(`${url}`);
+    //         console.log(response);
+    //     } catch (error) {
+    //         // Handle errors
+    //     }
+    // }
+
+    // function fetchCartItems(url) {
+    //     console.log(url)
+    // }
+
+    // function addtoWishlist() {
+    //     console.log('Add to wishlist')
+    // }
+
+    // function removeFromWishlist() {
+    //     console.log('Remove to wishlist')
+    // }
+
+    // function removeFromCart() {
+    //     console.log('remove from cart')
+    // }
 
 
     return (
         <div className="">
-
 
             {product && (
                 <div className='h-96 w-80 shadow bg-[#f2f2f2] relative overflow-hidden my-4 mx-2'>
