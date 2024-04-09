@@ -13,49 +13,48 @@ import { toast } from 'react-toastify';
 
 // Define the Cart component
 function Cart() {
-  // Retrieve authentication status from Redux store
   const auth = useSelector((state) => state.auth.isLoggedIn);
   const router = useRouter()
-  // State to store cart items and total price
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
 
-  // Fetch cart items when component mounts or auth status changes
-  useEffect(() => {
-    async function fetchCartItems() {
-      try {
-        let response;
-        if (auth) {
-          // Fetch cart items for authenticated user
-          const token = localStorage.getItem('token');
-          response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/get-user-cart-items/`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-          });
-        } else {
-          // Fetch cart items for anonymous user
-          const anonymousId = localStorage.getItem('anonymous_id');
-          response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/get-anonymous-cart-items/${anonymousId}/`, {
-            method: 'GET',
-          });
-        }
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch cart items');
-        }
-
-        const data = await response.json();
-        setCartItems(data.cart_items);
-        setTotalPrice(data.total_price);
-      } catch (error) {
-        console.error(error);
-        // Handle error
+  async function fetchCartItems() {
+    try {
+      let response;
+      if (auth) {
+        // Fetch cart items for authenticated user
+        response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/get-user-cart-items/`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+      } else {
+        // Fetch cart items for anonymous user
+        response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/get-anonymous-cart-items/${anonymousId}/`, {
+          method: 'GET',
+        });
       }
-    }
 
-    fetchCartItems();
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart items');
+      }
+
+      const data = await response.json();
+      setCartItems(data.cart_items);
+      setTotalPrice(data.total_price);
+    } catch (error) {
+      console.error(error);
+      // Handle error
+    }
+  }
+
+  useEffect(() => {
+    if (token || anonymousId){
+      fetchCartItems();
+    }
   }, []);
 
   const handleProceedToCheckout = () => {

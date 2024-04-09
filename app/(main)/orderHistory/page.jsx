@@ -100,8 +100,9 @@ function OrderHistory() {
 
 
                 const data = await response.json();
+                console.log(data);
                 setOrders(data.orders);
-                setUserName(data.user_name);
+                setUserName(data['user']['user ']);
                 setLoading(false);
 
                 console.log(data);

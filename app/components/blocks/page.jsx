@@ -19,7 +19,7 @@ function Blocks() {
         } catch (error) {
             console.error(error);
             setError(error)
-            isLoading(false)
+            setIsLoading(false)
         }
     }
     useEffect(() => {

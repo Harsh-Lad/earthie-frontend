@@ -17,6 +17,7 @@ function Login() {
   const auth = useSelector((state) => state.auth.isLoggedIn)
   const dispatch = useDispatch()
   const router = useRouter()
+  const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
 
   const [showPassword, setShowPassword] = useState(false)
 
@@ -48,36 +49,45 @@ function Login() {
         body: JSON.stringify(formData),
       });
 
-      // if (!response.ok) {
-      //   throw new Error(`Login failed: ${response.statusText}`); // Handle errors gracefully
-      // }
 
       const data = await response.json();
       if (response.ok) {
         if (data.access) {
           localStorage.setItem('token', data.access);
           dispatch(login())
-          toast.success(`Login Successful!`);
-          router.push('/')
+          const assignResponse = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/assignAnonToUser/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${data.access}` // Assuming access token is required for this endpoint
+            },
+            body: JSON.stringify({ anon: anonymousId }),
+          });
+
+          if (assignResponse.ok) {
+            toast.success(`Login Successful!`);
+            router.push('/')
+          }
+
+        } else if (response.status == 401) {
+          toast.error(data.detail || 'Login failed: Unexpected responsssse');
+          toast.error(data);
+        } else {
+          toast.error(data.detail || 'Login failed: Unexpected response');
+          toast.error(data);
         }
 
-      } else if (response.status == 401) {
-        toast.error(data.detail || 'Login failed: Unexpected responsssse');
-        toast.error(data);
-      } else {
-        toast.error(data.detail || 'Login failed: Unexpected response');
-        toast.error(data);
+
       }
-
-
-    } catch (error) {
+    }
+    catch (error) {
       toast.error(`Login failed this is catch: ${error}`);
     }
   };
 
   return (
     <div className='w-screen h-screen relative'>
-      <Image  src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
+      <Image src={loginImage} alt='' className='h-1/2 w-screen object-cover' />
       <div className="form w-full sm:w-[435px] h-3/5 shadow absolute bottom-0  bg-slate-50 rounded-md left-1/2 -translate-x-1/2 p-6 border-2">
         <p className="text-[26px] sm:text-4xl  font-bold">Welcome Back !</p>
         <p className="text-md font-medium">Get back into your account...</p>

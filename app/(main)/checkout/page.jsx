@@ -7,9 +7,13 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { add } from 'date-fns'
 
 function Checkout() {
     const router = useRouter()
+    const dispatch = useDispatch()
+    const auth = useSelector((state) => state.auth.isLoggedIn)
     const [address, setAddress] = useState({
         firstName: '',
         lastName: '',
@@ -34,12 +38,9 @@ function Checkout() {
         try {
             let url;
             const token = localStorage.getItem('token');
-            const anonymousId = localStorage.getItem('anonymous_id');
 
             if (token) {
                 url = `${process.env.NEXT_PUBLIC_HOST}/api/get-user-cart-items/`;
-            } else if (anonymousId) {
-                url = `${process.env.NEXT_PUBLIC_HOST}/api/get-anonymous-cart-items/${anonymousId}/`;
             } else {
                 throw new Error('Authentication token or anonymous ID not provided.');
             }
@@ -65,7 +66,13 @@ function Checkout() {
     };
 
     useEffect(() => {
-        fetchCartItems();
+        if (auth) {
+            fetchCartItems();
+        }
+        else {
+            toast.error('Something went wrong!')
+            router.push('/')
+        }
     }, []);
 
     useEffect(() => {
@@ -76,6 +83,10 @@ function Checkout() {
     }, [price, orderId]);
 
     const createOrder = async () => {
+        if (!address.firstName || !address.lastName || !address.email || !address.phone || !address.addressLine1 || !address.state || !address.city || !address.pincode) {
+            toast.error('Please fill in all the required fields');
+            return;
+        }
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/create-order/`, {
@@ -118,8 +129,8 @@ function Checkout() {
 
     function pay() {
         var options = {
-            "key": "rzp_live_pEyepar8NuQCjn", // Enter the Key ID generated from the Dashboard
-            // "key": "rzp_test_dhTo8WSf0CUEtv", // Enter the Key ID generated from the Dashboard
+            // "key": "rzp_live_pEyepar8NuQCjn", // Enter the Key ID generated from the Dashboard
+            "key": "rzp_test_dhTo8WSf0CUEtv", // Enter the Key ID generated from the Dashboard
             "amount": `${price}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Earthie Fashion",

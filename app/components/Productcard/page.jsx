@@ -19,7 +19,7 @@ function Productcard({ product }) {
     const router = useRouter()
 
     const fetchWishlist = async () => {
-        // try {
+        try {
             let url;
             if (auth) {
                 url = `${process.env.NEXT_PUBLIC_HOST}/api/user-wishlist/`;
@@ -28,7 +28,6 @@ function Productcard({ product }) {
             } else {
                 throw new Error('Authentication token or anonymous ID not provided.');
             }
-            console.log(token, anonymousId);
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -36,8 +35,6 @@ function Productcard({ product }) {
                     'Authorization': auth ? `Bearer ${token}` : undefined,
                 },
             });
-
-            console.log(response);
             if (!response.ok) {
                 throw new Error('Failed to fetch wishlist items');
             }
@@ -48,16 +45,17 @@ function Productcard({ product }) {
             // Check if the product exists in the wishlist
             const productIds = data.map(item => item.product.id);
             setIsInWishlist(productIds.includes(product.id));
-            console.log(productIds);
-        // } catch (error) {
-        //     console.error('Failed to fetch wishlist items:', error);
-        // }
+        } catch (error) {
+            console.error('Failed to fetch wishlist items:', error);
+        }
     };
 
 
     useEffect(() => {
-        fetchCartItems(); // Fetch cart items when component mounts
-        fetchWishlist();
+        if (token || anonymousId) {
+            fetchCartItems(); // Fetch cart items when component mounts
+            fetchWishlist();
+        }
     }, []);
 
 
@@ -81,7 +79,8 @@ function Productcard({ product }) {
                 body: JSON.stringify({ product_id: product.id, anonymous_id: anonymousId }),
             });
 
-            if (response) {
+            console.log(response);
+            if (!response.ok) {
                 console.log(response);
                 throw new Error('Failed to remove product from wishlist');
 

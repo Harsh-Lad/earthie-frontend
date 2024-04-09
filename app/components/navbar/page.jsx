@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import logo from '@/public/EarthieLogo.png'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Edit, Heart, LogOut, LucideMenu, LucideShoppingCart, Package, Search, User2Icon } from 'lucide-react'
+import { Edit, Heart, LogOut, LucideMenu, LucideShoppingCart, Package, Search, User2Icon, BadgePercent, Shirt, Boxes, Triangle} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { usePathname, useRouter } from 'next/navigation';
@@ -45,7 +46,7 @@ function Navbar() {
         <div className="left">
 
           <Link href={'/'}>
-            <Image alt='logo'  src={logo} />
+            <Image alt='logo' src={logo} />
           </Link>
         </div>
         <div className="center hidden md:flex absolute left-1/2 translate-x-[-50%]">
@@ -69,11 +70,11 @@ function Navbar() {
                 <PopoverContent className="flex flex-col gap-2 relative right-24 top-4">
                   {/* <Button asChild variant='secondary' className="text-left flex justify-start">
                     <Link href={'/orderHistory'} className='text-center'><Package className='mr-2' /> My orders</Link>
-                  </Button>  */}
+                  </Button> */}
                   {/* <Button asChild variant='secondary' className="text-left flex justify-start">
                     <Link href={'/orderHistory'} className='text-center'><Edit className='mr-2' /> Edit Profile</Link>
                   </Button> */}
-                  <Button variant='destructive' className="text-left flex justify-start" onClick={() => { dispatch(logout()); localStorage.clear(); router.push('/login'); toast.success('Logged out successfully!') }}>
+                  <Button variant='destructive' className="text-left flex justify-start" onClick={() => { dispatch(logout()); localStorage.removeItem('token'); router.push('/login'); toast.success('Logged out successfully!') }}>
                     <LogOut className='mr-2 text-whtite' /> Logout
                   </Button>
                 </PopoverContent>
@@ -101,21 +102,47 @@ function Navbar() {
               <SheetTrigger><LucideMenu className='text-white' /></SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  {/* <SheetTitle>Are you absolutely sure?</SheetTitle> */}
-                  <SheetDescription className="flex flex-col items-start gap-2">
-                    <Link className=' hover:text-slate-200 mx-2' href={'/'}>Home</Link>
-                    <Link className=' hover:text-slate-200 mx-2' href={'/collections'}>Collections</Link>
-                    <Link className=' hover:text-slate-200 mx-2' href={'/offers'}>Offers</Link>
-                    <Link className=' hover:text-slate-200 mx-2' href={'/newarrivals'}>New Arrivals</Link>
-                    <Link className=' hover:text-slate-200 mx-2' href={'/cart'}>Cart</Link>
-                    <Link className=' hover:text-slate-200 mx-2' href={'/wishlist'}>Wishlist</Link>
-                    <Button asChild>
-                      <Link href={'/login'}>Login</Link>
+                  <SheetTitle className="text-xl font-bold text-left py-2 flex items-center"><Image src={logo} width={45} height={45}/> EarthieFashion.</SheetTitle>
+                  <SheetDescription className="flex flex-col items-start gap-y-2">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                      <Link className=' hover:text-slate-200 ' href={'/'}><Shirt className="mr-2" /> Home</Link>
                     </Button>
-                    <Button asChild>
-                      <Link href={'/signup'}>Signup</Link>
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                      <Link className=' hover:text-slate-200 ' href={'/collections'}><Boxes className="mr-2" /> Collections</Link>
                     </Button>
-                    {/* <Link className=' hover:text-slate-200 mx-2' href={'/'}></Link> */}
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                      <Link className=' hover:text-slate-200 ' href={'/offers'}><BadgePercent className="mr-2"/> Offers</Link>
+                    </Button>
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                      <Link className=' hover:text-slate-200 ' href={'/newarrivals'}><Triangle className="mr-2"/> New Arrivals</Link>
+                    </Button>
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                      <Link className=' hover:text-slate-200 ' href={'/cart'}><LucideShoppingCart className='mr-2'/> Cart</Link>
+                    </Button>
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                      <Link className=' hover:text-slate-200 ' href={'/wishlist'}><Heart className='mr-2'/> Wishlist</Link>
+                    </Button>
+                    {auth ?
+                      <div className="flex flex-col items-start gap-3 w-full">
+                        {/* <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                          <Link href={'/orderHistory'} className='text-center'><Package className=' mr-2' /> My orders</Link>
+                        </Button> */}
+                        <Button variant='destructive' className="w-full text-left flex justify-start" onClick={() => { dispatch(logout()); localStorage.removeItem('token'); router.push('/login'); toast.success('Logged out successfully!') }}>
+                          <LogOut className='mr-2 text-whtite' /> Logout
+                        </Button>
+                      </div>
+                      :
+                      <div className="">
+                        <Button asChild>
+                          <Link href={'/login'}>Login</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={'/signup'}>Signup</Link>
+                        </Button>
+                      </div>
+                    }
+
+                    {/* <Link className=' hover:text-slate-200 ' href={'/'}></Link> */}
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>
