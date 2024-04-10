@@ -45,6 +45,8 @@ function Productcard({ product }) {
             // Check if the product exists in the wishlist
             const productIds = data.map(item => item.product.id);
             setIsInWishlist(productIds.includes(product.id));
+
+            console.log(productIds);
         } catch (error) {
             console.error('Failed to fetch wishlist items:', error);
         }
@@ -56,7 +58,8 @@ function Productcard({ product }) {
             fetchCartItems(); // Fetch cart items when component mounts
             fetchWishlist();
         }
-    }, []);
+
+    }, [token, anonymousId]);
 
 
     const removeFromWishlist = async () => {
@@ -323,7 +326,7 @@ function Productcard({ product }) {
                         </div>
                         <div className="bottom">
                             {isInCart ? (
-                                <Button className="rounded-none w-full mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { removeFromCart(product.id, size) }}>
+                                <Button className="rounded-none w-full mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(product.id, size) } else { toast.warning('Something went wrong') } }}>
                                     Remove from Cart
                                 </Button>
                             ) : (
