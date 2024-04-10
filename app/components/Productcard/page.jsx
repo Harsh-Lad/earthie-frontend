@@ -6,7 +6,7 @@ import { Heart } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+
 import {
     Drawer,
     DrawerClose,
@@ -16,13 +16,14 @@ import {
     DrawerHeader,
     DrawerTitle,
     DrawerTrigger,
-  } from "@/components/ui/drawer"
-  
+} from "@/components/ui/drawer"
+
 function Productcard({ product }) {
     const [wishlistItems, setWishlistItems] = useState([])
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
     const [size, setSize] = useState('')
+    const [selectedSize, setSelectedSize] = useState('');
     const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const auth = useSelector((state) => state.auth.isLoggedIn)
@@ -71,6 +72,10 @@ function Productcard({ product }) {
 
     }, [token, anonymousId]);
 
+
+    function handleSizeChange(size) {
+        setSelectedSize(size);
+    };
 
     const removeFromWishlist = async () => {
         try {
@@ -267,6 +272,91 @@ function Productcard({ product }) {
         }
     }
 
+    async function addToCartAuth(token, productId, productName) {
+        if (selectedSize == '') {
+            toast.error('Please select a relevant size to add the product to cart')
+            return;
+        }
+        else {
+
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/add-to-cart-authenticated/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include your JWT token in the Authorization header
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({ product_id: productId, size: selectedSize }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add product to Cart');
+                }
+
+                toast.success(`${productName} in Cart`)
+            } catch (error) {
+                console.error(error);
+                alert('Failed to add product to Cart. Please try again later.');
+            }
+        }
+
+    };
+
+
+    async function addToCartAnonymous(productId, productName, size) {
+        if (selectedSize == '') {
+            toast.error('Please select a relevant size to add the product to cart')
+            return;
+        }
+        else {
+
+            try {
+                let anonymousId = localStorage.getItem('anonymous_id');
+                const requestBody = { product_id: productId, size: selectedSize };
+
+                if (anonymousId) {
+                    requestBody.anonymous_id = anonymousId;
+                }
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/add-to-cart-anonymous/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to add product to Cart');
+                }
+
+                const data = await response.json();
+                const { anonymous_id } = data;
+
+                // Store anonymous_id in localStorage
+                localStorage.setItem('anonymous_id', anonymous_id);
+
+                toast.success(`${productName} in Cart`);
+            } catch (error) {
+                console.error(error);
+                alert('Failed to add product to Cart. Please try again later.');
+            }
+        }
+    };
+    const addToCart = async (productId, productName, size) => {
+        try {
+            if (auth) {
+                const token = localStorage.getItem('token');
+                await addToCartAuth(token, productId, productName, size);
+            } else {
+                await addToCartAnonymous(productId, productName, size);
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Failed to add product to Cart. Please try again later.');
+        }
+    };
 
     return (
         <div className="">
@@ -281,7 +371,6 @@ function Productcard({ product }) {
                         className='cursor-pointer h-full w-full object-cover object-center'
                     />
 
-                    {/* <Image alt='' src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`} onClick={() => { router.push(`/product?productId=${product.id}`) }} fill className='cursor-pointer h-full w-full object-cover object-center' /> */}
                     <div className="content px-2 absolute bottom-0 w-full mb-4">
                         <div className="top w-full flex">
                             <p className="bg-white w-[75%] px-3 py-3 text-[#030203] font-semibold">{product.productName}</p>
@@ -289,13 +378,71 @@ function Productcard({ product }) {
                         </div>
                         <div className="bottom">
                             {isInCart ? (
-                                <Button className="rounded-none w-full mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(product.id, size) } else { toast.warning('Something went wrong') } }}>
-                                    Remove from Cart
-                                </Button>
+                                <div className=" flex gap-2">
+                                    <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(product.id, size) } else { toast.warning('Something went wrong') } }}>
+                                        Remove from Cart
+                                    </Button>
+                                    <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={()=>{router.push('/cart')}} >
+                                        Go to Cart
+                                    </Button>
+                                </div>
                             ) : (
-                                <Button className="rounded-none w-full mt-2 bg-[#030203] hover:bg-[#000000]" onClick={() => { router.push(`/product?productId=${product.id}`) }}>
-                                    View
-                                </Button>
+                                <Drawer className=" container">
+                                    <DrawerTrigger className='w-full mt-2'>
+                                        <Button className="rounded-none w-full bg-[#030203] hover:bg-[#000000]" >
+                                            Add to Cart
+                                        </Button>
+                                    </DrawerTrigger>
+                                    <DrawerContent className="px-4 md:px-24 lg:px-48 ">
+                                        <div className="px-4 w-full flex flex-col gap-3 md:gap-0 md:flex-row py-2">
+                                            <div className=" w-4/4 md:w-2/4 lg:w-3/4 ">
+                                                <p className="text-xl md:text-2xl lg:text-4xl font-semibold">Add {product.productName} to cart</p>
+                                                <p className="text-lg md:text-3xl my-0 md:my-2 font-semibold text-left"> ₹{product.isInOffer ? product.offerPrice : product.price}</p>
+                                                <p className="text-xl font-semibold">Select a size</p>
+                                                <div className='flex gap-1 my-2'>
+                                                    <input className='hidden' type="radio" id="sizeS" name="size" value="S" onChange={() => handleSizeChange("S")} checked={selectedSize === "S"} />
+                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "S" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeS">S</label>
+
+                                                    <input className='hidden' type="radio" id="sizeM" name="size" value="M" onChange={() => handleSizeChange("M")} checked={selectedSize === "M"} />
+                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "M" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeM">M</label>
+
+                                                    <input className='hidden' type="radio" id="sizeL" name="size" value="L" onChange={() => handleSizeChange("L")} checked={selectedSize === "L"} />
+                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "L" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeL">L</label>
+
+                                                    <input className='hidden' type="radio" id="sizeXL" name="size" value="XL" onChange={() => handleSizeChange("XL")} checked={selectedSize === "XL"} />
+                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "XL" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeXL">XL</label>
+
+                                                    <input className='hidden' type="radio" id="sizeXXL" name="size" value="XXL" onChange={() => handleSizeChange("XXL")} checked={selectedSize === "XXL"} />
+                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "XXL" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeXXL">XXL</label>
+
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <Button className="w-4/4 md:w-2/4" onClick={() => { addToCart(product.id, product.productName, selectedSize) }}>Add to Cart</Button>
+                                                    <DrawerClose className="w-4/4 md:w-2/4">
+                                                        <Button variant="outline" className="w-full mt-2">Cancel</Button>
+                                                    </DrawerClose>
+                                                </div>
+                                                {/* Add more radio buttons for other sizes */}
+                                            </div>
+
+                                            <div className=" w-4/4 md:w-2/4 lg:w-1/4">
+                                                <Image
+                                                    alt=''
+                                                    width={340}
+                                                    height={145}
+                                                    src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`}
+                                                    onClick={() => { router.push(`/product?productId=${product.id}`) }}
+                                                    className='cursor-pointer aspect-auto object-cover object-center'
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <DrawerFooter>
+
+                                        </DrawerFooter>
+                                    </DrawerContent>
+                                </Drawer>
+
                             )}
                         </div>
                     </div>
