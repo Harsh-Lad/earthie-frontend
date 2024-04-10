@@ -7,7 +7,17 @@ import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
-
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+  } from "@/components/ui/drawer"
+  
 function Productcard({ product }) {
     const [wishlistItems, setWishlistItems] = useState([])
     const [isInWishlist, setIsInWishlist] = useState(false);
@@ -256,53 +266,6 @@ function Productcard({ product }) {
             toast.error('Failed to remove product from cart. Please try again later.');
         }
     }
-
-    // to be continued 
-
-    // useEffect(() => {
-    //     let urlWishList;
-    //     let urlCart;
-    //     if (auth) {
-    //         urlWishList = `${process.env.NEXT_PUBLIC_HOST}/api/user-wishlist/`;
-    //         urlCart = `${process.env.NEXT_PUBLIC_HOST}/api/get-user-cart-items/`;
-    //         fetchWishlist(urlWishList)
-    //         fetchCartItems(urlCart)
-    //     }
-    //     else if (anonymousId != null) {
-    //         urlWishList = `${process.env.NEXT_PUBLIC_HOST}/api/anonymous-wishlist/${anonymousId}/`
-    //         urlCart = `${process.env.NEXT_PUBLIC_HOST}/api/get-anonymous-cart-items/${anonymousId}/`;
-    //         fetchWishlist(urlWishList)
-    //         fetchCartItems(urlCart)
-    //     }
-    // }, [])
-
-
-    // async function fetchWishlist(url) {
-    //     // if auth then add token to the bearer token or leave empty and fetch the url 
-    //     // fetch using axios give me the code
-    //     try {
-    //         const response = await axios.get(`${url}`);
-    //         console.log(response);
-    //     } catch (error) {
-    //         // Handle errors
-    //     }
-    // }
-
-    // function fetchCartItems(url) {
-    //     console.log(url)
-    // }
-
-    // function addtoWishlist() {
-    //     console.log('Add to wishlist')
-    // }
-
-    // function removeFromWishlist() {
-    //     console.log('Remove to wishlist')
-    // }
-
-    // function removeFromCart() {
-    //     console.log('remove from cart')
-    // }
 
 
     return (

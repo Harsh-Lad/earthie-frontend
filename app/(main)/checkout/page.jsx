@@ -129,7 +129,8 @@ function Checkout() {
 
     function pay() {
         var options = {
-            "key": `${process.env.NEXT_PUBLIC_RAZORPAY_KEY}`, // Enter the Key ID generated from the Dashboard
+            // "key": `${process.env.NEXT_PUBLIC_RAZORPAY_KEY}`, // Enter the Key ID generated from the Dashboard
+            "key": 'rzp_live_pEyepar8NuQCjn', // Enter the Key ID generated from the Dashboard
             "amount": `${price}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Earthie Fashion",
