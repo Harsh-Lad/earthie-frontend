@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import Productcard from '@/app/components/Productcard/page';
-import Image  from 'next/image';
+import Image from 'next/image';
 import order from '@/public/orders.png'
 import orderM from '@/public/ordersM.png'
 
@@ -55,12 +55,27 @@ function OrderHistory() {
                 <Image src={orderM} alt='cart header' className='w-full h-auto object-cover block md:hidden' />
             </div>
             <div className="md:px-24">
-                {/* <p className="text-4xl font-semibold">{userName}&apos;s Orders</p> */}
+
                 <div className="flex flex-wrap justify-center md:justify-start ">
                     {orders && orders.map(order => (
                         <Productcard key={order.order.id} orderDetail={order.order} status={order.status} product={order.orderItem} order={true} />
                     ))}
                 </div>
+
+                {orders.length === 0 ? (
+                    <div className="">
+                        <p className='text-3xl font-semibold text-[#030203] mt-5'>No orders to show, Order some now! </p>
+                    </div>
+                ) : (
+                    <div>
+                        {/* <p className="text-4xl font-semibold">{userName}&apos;s Orders</p> */}
+                        <div className="flex flex-wrap justify-center md:justify-start">
+                            {orders.map(order => (
+                                <Productcard key={order.order.id} orderDetail={order.order} status={order.status} product={order.orderItem} order={true} />
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
