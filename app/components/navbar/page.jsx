@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import logo from '@/public/EarthieLogo.png'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Edit, Heart, LogOut, LucideMenu, LucideShoppingCart, Package, Search, User2Icon, BadgePercent, Shirt, Boxes, Triangle} from 'lucide-react'
+import { Edit, Heart, LogOut, LucideMenu, Plus ,LucideShoppingCart, LogIn ,Package, Search, User2Icon, BadgePercent, Shirt, Boxes, Triangle} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -68,9 +68,9 @@ function Navbar() {
               <Popover>
                 <PopoverTrigger> <User2Icon className='text-white mr-2' size={20} /></PopoverTrigger>
                 <PopoverContent className="flex flex-col gap-2 relative right-24 top-4">
-                  {/* <Button asChild variant='secondary' className="text-left flex justify-start">
+                  <Button asChild variant='secondary' className="text-left flex justify-start">
                     <Link href={'/orderHistory'} className='text-center'><Package className='mr-2' /> My orders</Link>
-                  </Button> */}
+                  </Button>
                   {/* <Button asChild variant='secondary' className="text-left flex justify-start">
                     <Link href={'/orderHistory'} className='text-center'><Edit className='mr-2' /> Edit Profile</Link>
                   </Button> */}
@@ -124,20 +124,20 @@ function Navbar() {
                     </Button>
                     {auth ?
                       <div className="flex flex-col items-start gap-3 w-full">
-                        {/* <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                        <Button asChild variant='secondary' className="text-left flex justify-start w-full">
                           <Link href={'/orderHistory'} className='text-center'><Package className=' mr-2' /> My orders</Link>
-                        </Button> */}
+                        </Button>
                         <Button variant='destructive' className="w-full text-left flex justify-start" onClick={() => { dispatch(logout()); localStorage.removeItem('token'); router.push('/login'); toast.success('Logged out successfully!') }}>
                           <LogOut className='mr-2 text-whtite' /> Logout
                         </Button>
                       </div>
                       :
-                      <div className="">
-                        <Button asChild>
-                          <Link href={'/login'}>Login</Link>
+                      <div className="flex flex-col gap-2 w-full">
+                        <Button asChild className="flex justify-start">
+                          <Link href={'/login'}><LogIn  className='mr-2'/> Login</Link>
                         </Button>
-                        <Button asChild>
-                          <Link href={'/signup'}>Signup</Link>
+                        <Button variant="secondary" asChild className="flex justify-start">
+                          <Link href={'/signup'}><Plus className='mr-2'/> Signup</Link>
                         </Button>
                       </div>
                     }

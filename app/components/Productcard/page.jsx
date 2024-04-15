@@ -11,14 +11,11 @@ import {
     Drawer,
     DrawerClose,
     DrawerContent,
-    DrawerDescription,
     DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer"
 
-function Productcard({ product }) {
+function Productcard({ product, order, orderDetail, status, orderSize }) {
     const [wishlistItems, setWishlistItems] = useState([])
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
@@ -28,6 +25,8 @@ function Productcard({ product }) {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const auth = useSelector((state) => state.auth.isLoggedIn)
     const router = useRouter()
+    const [timeoforder, setTimeoforder] = useState('')
+    const [timeofDelivery, setTimeofDelivery] = useState('')
 
     const fetchWishlist = async () => {
         try {
@@ -56,8 +55,6 @@ function Productcard({ product }) {
             // Check if the product exists in the wishlist
             const productIds = data.map(item => item.product.id);
             setIsInWishlist(productIds.includes(product.id));
-
-            console.log(productIds);
         } catch (error) {
             console.error('Failed to fetch wishlist items:', error);
         }
@@ -68,9 +65,33 @@ function Productcard({ product }) {
         if (token || anonymousId) {
             fetchCartItems(); // Fetch cart items when component mounts
             fetchWishlist();
+            console.log(orderDetail);
         }
 
     }, [token, anonymousId]);
+
+
+    useEffect(() => {
+        if (orderDetail) {
+            setTimeoforder(new Date(orderDetail.created_at)); // Convert string to date object
+            setTimeofDelivery(new Date(orderDetail.updated_at)); // Convert string to date object
+        }
+    }, [orderDetail]);
+
+    const isCancelAllowed = () => {
+        const currentTime = new Date();
+        const timeDifference = currentTime - timeoforder;
+        const hoursDifference = timeDifference / (1000 * 3600); // Convert milliseconds to hours
+
+        return hoursDifference < 12; // Check if less than 12 hours
+    };
+    const isReplacedAllowed = () => {
+        const currentTime = new Date();
+        const timeDifference = currentTime - timeoforder;
+        const daysDifference = timeDifference / (1000 * 3600 * 24); // Convert milliseconds to days
+
+        return daysDifference <= 7; // Check if less than or equal to 7 days
+    };
 
 
     function handleSizeChange(size) {
@@ -358,6 +379,33 @@ function Productcard({ product }) {
         }
     };
 
+    async function cancelOrder(id) {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/cancelOrder/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    id: id,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch order status');
+            }
+
+            const data = await response.json();
+            // toast.success(data.data)
+            toast.success(data.data, { toastId: 'cancelOrderSuccess' }); // Add toastId to uniquely identify this toast
+            window.location.reload()
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <div className="">
 
@@ -376,83 +424,114 @@ function Productcard({ product }) {
                             <p className="bg-white w-[75%] px-3 py-3 text-[#030203] font-semibold">{product.productName}</p>
                             <p className="bg-[#030203] w-[25%] px-3 py-3 text-white font-semibold text-center"> ₹{product.isInOffer ? product.offerPrice : product.price}</p>
                         </div>
-                        <div className="bottom">
-                            {isInCart ? (
-                                <div className=" flex gap-2">
-                                    <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(product.id, size) } else { toast.warning('Something went wrong') } }}>
-                                        Remove from Cart
+
+                        {order && order ?
+                            <div className="">
+                                {isCancelAllowed() && status != 'cancelled' ? (
+                                    <Button className="rounded-none w-full bg-[#030203] hover:bg-[#000000] mt-2" onClick={() => { cancelOrder(product.id) }}>
+                                        Cancel Order
                                     </Button>
-                                    <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={()=>{router.push('/cart')}} >
-                                        Go to Cart
-                                    </Button>
-                                </div>
-                            ) : (
-                                <Drawer className=" container">
-                                    <DrawerTrigger className='w-full mt-2'>
-                                        <Button className="rounded-none w-full bg-[#030203] hover:bg-[#000000]" >
-                                            Add to Cart
+                                ) : (
+                                    <div className="">
+                                        {status == 'delivered' && isReplacedAllowed() ?
+                                            <Button className="rounded-none w-full capitalize bg-[#030203] hover:bg-[#000000] mt-2">
+                                                Replace Order
+                                            </Button>
+                                            :
+                                            <Button className="rounded-none w-full capitalize bg-[#030203] hover:bg-[#000000] mt-2">
+                                                {status}
+                                            </Button>
+                                        }
+                                    </div>
+                                )}
+                            </div>
+                            :
+                            <div className="bottom">
+                                {isInCart ? (
+                                    <div className=" flex gap-2">
+                                        <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(product.id, size) } else { toast.warning('Something went wrong') } }}>
+                                            Remove from Cart
                                         </Button>
-                                    </DrawerTrigger>
-                                    <DrawerContent className="px-4 md:px-24 lg:px-48 ">
-                                        <div className="px-4 w-full flex flex-col gap-3 md:gap-0 md:flex-row py-2">
-                                            <div className=" w-4/4 md:w-2/4 lg:w-3/4 ">
-                                                <p className="text-xl md:text-2xl lg:text-4xl font-semibold">Add {product.productName} to cart</p>
-                                                <p className="text-lg md:text-3xl my-0 md:my-2 font-semibold text-left"> ₹{product.isInOffer ? product.offerPrice : product.price}</p>
-                                                <p className="text-xl font-semibold">Select a size</p>
-                                                <div className='flex gap-1 my-2'>
-                                                    <input className='hidden' type="radio" id="sizeS" name="size" value="S" onChange={() => handleSizeChange("S")} checked={selectedSize === "S"} />
-                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "S" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeS">S</label>
+                                        <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { router.push('/cart') }} >
+                                            Go to Cart
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <Drawer className=" container">
+                                        <DrawerTrigger className='w-full mt-2'>
+                                            <Button className="rounded-none w-full bg-[#030203] hover:bg-[#000000]" >
+                                                Add to Cart
+                                            </Button>
+                                        </DrawerTrigger>
+                                        <DrawerContent className="px-4 md:px-24 lg:px-48 ">
+                                            <div className="px-4 w-full flex flex-col gap-3 md:gap-0 md:flex-row py-2">
+                                                <div className=" w-4/4 md:w-2/4 lg:w-3/4 ">
+                                                    <p className="text-xl md:text-2xl lg:text-4xl font-semibold">Add {product.productName} to cart</p>
+                                                    <p className="text-lg md:text-3xl my-0 md:my-2 font-semibold text-left"> ₹{product.isInOffer ? product.offerPrice : product.price}</p>
+                                                    <p className="text-xl font-semibold">Select a size</p>
+                                                    <div className='flex gap-1 my-2'>
+                                                        <input className='hidden' type="radio" id="sizeS" name="size" value="S" onChange={() => handleSizeChange("S")} checked={selectedSize === "S"} />
+                                                        <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "S" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeS">S</label>
 
-                                                    <input className='hidden' type="radio" id="sizeM" name="size" value="M" onChange={() => handleSizeChange("M")} checked={selectedSize === "M"} />
-                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "M" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeM">M</label>
+                                                        <input className='hidden' type="radio" id="sizeM" name="size" value="M" onChange={() => handleSizeChange("M")} checked={selectedSize === "M"} />
+                                                        <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "M" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeM">M</label>
 
-                                                    <input className='hidden' type="radio" id="sizeL" name="size" value="L" onChange={() => handleSizeChange("L")} checked={selectedSize === "L"} />
-                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "L" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeL">L</label>
+                                                        <input className='hidden' type="radio" id="sizeL" name="size" value="L" onChange={() => handleSizeChange("L")} checked={selectedSize === "L"} />
+                                                        <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "L" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeL">L</label>
 
-                                                    <input className='hidden' type="radio" id="sizeXL" name="size" value="XL" onChange={() => handleSizeChange("XL")} checked={selectedSize === "XL"} />
-                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "XL" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeXL">XL</label>
+                                                        <input className='hidden' type="radio" id="sizeXL" name="size" value="XL" onChange={() => handleSizeChange("XL")} checked={selectedSize === "XL"} />
+                                                        <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "XL" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeXL">XL</label>
 
-                                                    <input className='hidden' type="radio" id="sizeXXL" name="size" value="XXL" onChange={() => handleSizeChange("XXL")} checked={selectedSize === "XXL"} />
-                                                    <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "XXL" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeXXL">XXL</label>
+                                                        <input className='hidden' type="radio" id="sizeXXL" name="size" value="XXL" onChange={() => handleSizeChange("XXL")} checked={selectedSize === "XXL"} />
+                                                        <label className={`cursor-pointer h-12 w-12 flex items-center justify-center font-semibold border-2 rounded-md ${selectedSize === "XXL" ? 'bg-[#030203] text-white' : ' bg-slate-100'}`} htmlFor="sizeXXL">XXL</label>
 
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <Button className="w-4/4 md:w-2/4" onClick={() => { addToCart(product.id, product.productName, selectedSize) }}>Add to Cart</Button>
+                                                        <DrawerClose className="w-4/4 md:w-2/4">
+                                                            <Button variant="outline" className="w-full mt-2">Cancel</Button>
+                                                        </DrawerClose>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <Button className="w-4/4 md:w-2/4" onClick={() => { addToCart(product.id, product.productName, selectedSize) }}>Add to Cart</Button>
-                                                    <DrawerClose className="w-4/4 md:w-2/4">
-                                                        <Button variant="outline" className="w-full mt-2">Cancel</Button>
-                                                    </DrawerClose>
+
+                                                <div className=" w-4/4 md:w-2/4 lg:w-1/4">
+                                                    <Image
+                                                        alt=''
+                                                        width={340}
+                                                        height={145}
+                                                        src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`}
+                                                        onClick={() => { router.push(`/product?productId=${product.id}`) }}
+                                                        className='cursor-pointer aspect-auto object-cover object-center'
+                                                    />
                                                 </div>
-                                                {/* Add more radio buttons for other sizes */}
                                             </div>
 
-                                            <div className=" w-4/4 md:w-2/4 lg:w-1/4">
-                                                <Image
-                                                    alt=''
-                                                    width={340}
-                                                    height={145}
-                                                    src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`}
-                                                    onClick={() => { router.push(`/product?productId=${product.id}`) }}
-                                                    className='cursor-pointer aspect-auto object-cover object-center'
-                                                />
-                                            </div>
-                                        </div>
+                                            <DrawerFooter>
 
-                                        <DrawerFooter>
+                                            </DrawerFooter>
+                                        </DrawerContent>
+                                    </Drawer>
 
-                                        </DrawerFooter>
-                                    </DrawerContent>
-                                </Drawer>
-
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        }
                     </div>
 
-                    <div className="wishList absolute top-0 mt-2 flex items-center justify-between w-full px-3">
-                        <Button variant="secondary" className=" rounded-none bg-white shadow-lg" onClick={() => { addtoWishlist(product.id, product.productName) }}>  <Heart stroke={isInWishlist ? 'red' : 'black'} fill={isInWishlist ? 'red' : 'white'} /></Button>
-
-                        {
-                            product.isInOffer &&
-                            <p className="text-red-500 bg-white py-2 px-2 font-medium">{product.offerName}</p>
+                    <div className="wishList absolute top-0 w-full">
+                        {order && order ?
+                            <div className="w-full">
+                                {
+                                    <p className='text-white bg-gradient-to-b from-black/40 w-full py-4 text-center font-semibold capitalize'>{status}</p>
+                                }
+                            </div>
+                            :
+                            <div className="mt-2 flex items-center justify-between w-full px-3">
+                                <Button variant="secondary" className=" rounded-none bg-white shadow-lg" onClick={() => { addtoWishlist(product.id, product.productName) }}>  <Heart stroke={isInWishlist ? 'red' : 'black'} fill={isInWishlist ? 'red' : 'white'} /></Button>
+                                {
+                                    product.isInOffer &&
+                                    <p className="text-red-500 bg-white py-2 px-2 font-medium">{product.offerName}</p>
+                                }
+                            </div>
                         }
                     </div>
                 </div>

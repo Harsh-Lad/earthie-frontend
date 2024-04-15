@@ -3,6 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import axios from 'axios';
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 function Blocks() {
     const [blocks, setBlocks] = useState({})
@@ -43,7 +44,9 @@ function Blocks() {
             {blocks.length > 0 && (
                 blocks.map((slide, index) => (
                     <div className="w-4/4 md:w-2/4" key={index}>
+                        <Link href={slide.link}>
                         <Image src={`${process.env.NEXT_PUBLIC_HOST}${slide.blockImage}`} alt="" width={1024} height={768} className="w-full h-auto object-cover" />
+                        </Link>
                     </div>
                 )))}
         </div>

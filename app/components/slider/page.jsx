@@ -9,7 +9,7 @@ import Autoplay from "embla-carousel-autoplay"
 import Image from 'next/image'
 import axios from 'axios'
 import { Skeleton } from '@/components/ui/skeleton'
-
+import Link from 'next/link'
 function Slider() {
     const [slides, setSlides] = useState({})
     const [isLoading, setIsLoading] = useState(true);
@@ -31,8 +31,8 @@ function Slider() {
         getSlides()
     }, [])
 
-    if (isLoading){
-        return(
+    if (isLoading) {
+        return (
             <Skeleton className="w-full h-[70vh] bg-slate-200" />
         )
     }
@@ -54,13 +54,16 @@ function Slider() {
                     {slides.length > 0 && (
                         slides.map((slide, index) => (
                             <CarouselItem key={index}>
-                                <Image
-                                    alt={`slide ${index + 1}`}
-                                    src={`${process.env.NEXT_PUBLIC_HOST}${slide.desktopImage}`}
-                                    className='w-full h-auto object-cover hidden md:block'
-                                    width={1920}
-                                    height={700}
-                                />
+                                <Link href={slide.link}>
+                                    <Image
+                                        alt={`slide ${index + 1}`}
+                                        src={`${process.env.NEXT_PUBLIC_HOST}${slide.desktopImage}`}
+                                        className='w-full h-auto object-cover hidden md:block'
+                                        width={1920}
+                                        height={700}
+                                    />
+                                </Link>
+                                <Link href={slide.link}>
                                 <Image
                                     alt={`slide ${index + 1}`}
                                     src={`${process.env.NEXT_PUBLIC_HOST}${slide.mobileImage}`}
@@ -68,6 +71,7 @@ function Slider() {
                                     width={1920}
                                     height={1080}
                                 />
+                                </Link>
                             </CarouselItem>
 
                         ))

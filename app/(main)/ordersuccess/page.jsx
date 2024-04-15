@@ -11,34 +11,34 @@ function OrderSuccess() {
     const [orderStatus, setOrderStatus] = useState('');
     const searchParams = useSearchParams();
     
-    const orderId = searchParams.get('orderId'); // Get the order ID value
+    // const orderId = searchParams.get('orderId'); // Get the order ID value
 
-    useEffect(() => {
-        const fetchOrderStatus = async () => {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/checkStatus/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        orderId: orderId
-                    }),
-                });
+    // useEffect(() => {
+    //     const fetchOrderStatus = async () => {
+    //         try {
+    //             const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/checkStatus/`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                 },
+    //                 body: JSON.stringify({
+    //                     orderId: orderId
+    //                 }),
+    //             });
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch order status');
-                }
+    //             if (!response.ok) {
+    //                 throw new Error('Failed to fetch order status');
+    //             }
 
-                const data = await response.json();
-                setOrderStatus(data.status);
-            } catch (error) {
-                console.error(error);
-            }
-        };
+    //             const data = await response.json();
+    //             setOrderStatus(data.status);
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     };
 
-        fetchOrderStatus(); // Call the fetchOrderStatus function when the component mounts
-    }, [orderId]);
+    //     fetchOrderStatus(); // Call the fetchOrderStatus function when the component mounts
+    // }, [orderId]);
     return (
         <div className='min-h-screen py-28 container'>
             <div className="top flex flex-col items-center">

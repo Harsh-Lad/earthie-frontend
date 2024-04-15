@@ -55,19 +55,23 @@ function Login() {
         if (data.access) {
           localStorage.setItem('token', data.access);
           dispatch(login())
-          const assignResponse = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/assignAnonToUser/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${data.access}` // Assuming access token is required for this endpoint
-            },
-            body: JSON.stringify({ anon: anonymousId }),
-          });
+          if (anonymousId) {
 
-          if (assignResponse.ok) {
-            toast.success(`Login Successful!`);
-            router.push('/')
+            const assignResponse = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/assignAnonToUser/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${data.access}` // Assuming access token is required for this endpoint
+              },
+              body: JSON.stringify({ anon: anonymousId }),
+            });
+            if (assignResponse.ok) {
+              toast.success(`Login Successful!`);
+              router.push('/')
+            }
           }
+          toast.success(`Login Successful!`);
+          router.push('/')
 
         } else if (response.status == 401) {
           toast.error(data.detail || 'Login failed: Unexpected responsssse');
