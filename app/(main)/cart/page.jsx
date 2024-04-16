@@ -17,10 +17,14 @@ function Cart() {
   const router = useRouter()
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
-  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  const [token, setToken] = useState('')
+  const [anonymousId, setAnonymousId] = useState('')
+  // const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
+  // const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  // const [isLoading, setIsLoading] = useState(true); // Add loading state
 
   async function fetchCartItems() {
+
     try {
       let response;
       if (auth) {
@@ -29,12 +33,14 @@ function Cart() {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
+            cache: 'no-store'
           },
         });
       } else {
         // Fetch cart items for anonymous user
         response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/get-anonymous-cart-items/${anonymousId}/`, {
           method: 'GET',
+          cache: 'no-store'
         });
       }
 
@@ -45,17 +51,30 @@ function Cart() {
       const data = await response.json();
       setCartItems(data.cart_items);
       setTotalPrice(data.total_price);
+      console.log(data);
+
     } catch (error) {
       console.error(error);
       // Handle error
     }
+
   }
 
+
   useEffect(() => {
-    if (token || anonymousId){
+    let tempToken = localStorage.getItem('token')
+    let tempAnon = localStorage.getItem('anonymous_id')
+    setToken(tempToken)
+    setAnonymousId(tempAnon)
+
+  }, []);
+  useEffect(() => {
+    if (token || anonymousId) {
+      console.log(token);
+      console.log(anonymousId);
       fetchCartItems();
     }
-  }, []);
+  }, [token, anonymousId]);
 
   const handleProceedToCheckout = () => {
     // If user is not logged in, redirect to login page and display toast message
@@ -75,6 +94,7 @@ function Cart() {
         <Image src={cart} alt='cart header' className='w-full h-auto object-cover hidden md:block' />
         <Image src={cartM} alt='cart header' className='w-full h-auto object-cover block md:hidden' />
       </div>
+
       {cartItems && cartItems.length > 0 && (
         <div className="px-5 md:px-24 flex items-center justify-between">
           <p className="text-lg md:text-2xl font-semibold py-10">Cart Total: ₹ {totalPrice}</p>
@@ -92,6 +112,7 @@ function Cart() {
           <p className='text-3xl font-semibold text-[#030203] mt-5'>Your cart is empty. Start shopping now!</p>
         )}
       </div>
+
 
     </div>
   );

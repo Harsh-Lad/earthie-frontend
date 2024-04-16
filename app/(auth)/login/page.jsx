@@ -68,6 +68,7 @@ function Login() {
             if (assignResponse.ok) {
               toast.success(`Login Successful!`);
               router.push('/')
+              return;
             }
           }
           toast.success(`Login Successful!`);

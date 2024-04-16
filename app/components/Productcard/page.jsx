@@ -15,7 +15,7 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer"
 
-function Productcard({ product, order, orderDetail, status, orderSize }) {
+function Productcard({ product, order, orderDetail, status, orderedSize }) {
     const [wishlistItems, setWishlistItems] = useState([])
     const [isInWishlist, setIsInWishlist] = useState(false);
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
@@ -65,7 +65,6 @@ function Productcard({ product, order, orderDetail, status, orderSize }) {
         if (token || anonymousId) {
             fetchCartItems(); // Fetch cart items when component mounts
             fetchWishlist();
-            console.log(orderDetail);
         }
 
     }, [token, anonymousId]);
@@ -118,9 +117,7 @@ function Productcard({ product, order, orderDetail, status, orderSize }) {
                 body: JSON.stringify({ product_id: product.id, anonymous_id: anonymousId }),
             });
 
-            console.log(response);
             if (!response.ok) {
-                console.log(response);
                 throw new Error('Failed to remove product from wishlist');
 
             }
@@ -389,8 +386,10 @@ function Productcard({ product, order, orderDetail, status, orderSize }) {
                 },
                 body: JSON.stringify({
                     id: id,
+                    size: orderedSize,
                 }),
             });
+
 
             if (!response.ok) {
                 throw new Error('Failed to fetch order status');
