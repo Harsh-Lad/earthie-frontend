@@ -55,8 +55,9 @@ function Login() {
         if (data.access) {
           localStorage.setItem('token', data.access);
           dispatch(login())
-          if (anonymousId) {
 
+          if (anonymousId !== null) {
+            console.log('this runs ');
             const assignResponse = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/assignAnonToUser/`, {
               method: 'POST',
               headers: {
@@ -122,7 +123,7 @@ function Login() {
           <Link href={'/forgot-password'} className="text-sm font-medium mt-2">Forgot your password ?</Link>
           <Link href={'/signup'} className="text-sm font-medium mt-2">Create an account</Link>
         </div>
-        <Button className="bg-[#030203] w-full rounded-none mt-3" onClick={handleSubmit}>Login</Button>
+        <Button className="bg-[#030203] w-full rounded-none mt-3" type="submit" onClick={handleSubmit}>Login</Button>
       </div>
     </div>
   )

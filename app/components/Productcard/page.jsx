@@ -21,8 +21,10 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
     const [isInCart, setIsInCart] = useState(false); // State to track whether the product is in the cart
     const [size, setSize] = useState('')
     const [selectedSize, setSelectedSize] = useState('');
-    const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    const [token, setToken] = useState(null)
+    const [anonymousId, setAnonymousId] = useState(null)
+    // const anonymousId = typeof window !== 'undefined' ? localStorage.getItem('anonymous_id') : null;
+    // const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
     const auth = useSelector((state) => state.auth.isLoggedIn)
     const router = useRouter()
     const [timeoforder, setTimeoforder] = useState('')
@@ -62,11 +64,15 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
 
 
     useEffect(() => {
-        if (token || anonymousId) {
-            fetchCartItems(); // Fetch cart items when component mounts
-            fetchWishlist();
-        }
+        setToken(localStorage.getItem('token'))
+        setAnonymousId(localStorage.getItem('anonymous_id'))
+    }, [])
 
+    useEffect(() => {
+        if (token !== null || anonymousId !== null) {
+            fetchWishlist(); // Fetch wishlist items when token or anonymousId exists
+            fetchCartItems(); // Fetch cart items when token or anonymousId exists
+        }
     }, [token, anonymousId]);
 
 
@@ -123,7 +129,9 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
             }
 
             toast.success(`${product.productName} removed from wishlist`);
-            fetchWishlist(); // Refresh wishlist items after removal
+            if (token !== null || anonymousId !== null) {
+                fetchWishlist(); // Refresh wishlist items after removal
+            }
         } catch (error) {
             console.error('Failed to remove product from wishlist:', error);
             alert('Failed to remove product from wishlist. Please try again later.');
@@ -141,7 +149,9 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                 } else {
                     await addToWishlistAnonymous(productId, productName);
                 }
-                fetchWishlist(); // Refresh wishlist items after adding
+                if (token !== null || anonymousId !== null) {
+                    fetchWishlist(); // Refresh wishlist items after adding
+                }
             } catch (error) {
                 console.error(error);
                 alert('Failed to add product to wishlist. Please try again later.');
@@ -163,11 +173,13 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                     body: JSON.stringify({ product_id: productId }),
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to add product to wishlist');
+                if (response.ok) {
+                    toast.success(`${productName} in wishlist`)
                 }
-
-                toast.success(`${productName} in wishlist`)
+                if (response.status == 400){
+                    toast.success(`${productName} already in wishlist`)
+                    return
+                }                
             }
         } catch (error) {
             console.error(error);
@@ -308,11 +320,14 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                     body: JSON.stringify({ product_id: productId, size: selectedSize }),
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to add product to Cart');
+                if (response.ok) {
+                    toast.success(`${productName} in Cart`)
                 }
 
-                toast.success(`${productName} in Cart`)
+                if (response.status == 400){
+                    toast.success(`${productName} already in Cart`)
+                    return
+                }
             } catch (error) {
                 console.error(error);
                 alert('Failed to add product to Cart. Please try again later.');
@@ -320,7 +335,6 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
         }
 
     };
-
 
     async function addToCartAnonymous(productId, productName, size) {
         if (selectedSize == '') {
@@ -345,23 +359,28 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                     body: JSON.stringify(requestBody),
                 });
 
-                if (!response.ok) {
-                    throw new Error('Failed to add product to Cart');
+                if (response.ok) {
+                    const data = await response.json();
+                    const { anonymous_id } = data;
+
+                    // Store anonymous_id in localStorage
+                    localStorage.setItem('anonymous_id', anonymous_id);
+
+                    toast.success(`${productName} in Cart`);
                 }
 
-                const data = await response.json();
-                const { anonymous_id } = data;
+                if (response.status == 400){
+                    toast.success(`${productName} already in Cart`);
+                    return
+                }
 
-                // Store anonymous_id in localStorage
-                localStorage.setItem('anonymous_id', anonymous_id);
-
-                toast.success(`${productName} in Cart`);
             } catch (error) {
                 console.error(error);
                 alert('Failed to add product to Cart. Please try again later.');
             }
         }
     };
+
     const addToCart = async (productId, productName, size) => {
         try {
             if (auth) {

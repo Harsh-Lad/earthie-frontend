@@ -19,6 +19,7 @@ function Product() {
     const searchParams = useSearchParams()
     const productId = searchParams.get('productId')
     const [IsInCart, setIsInCart] = useState(false)
+    
     useEffect(() => {
         setAnonymous_id(localStorage.getItem('anonymous_id'));
         setToken(localStorage.getItem('token'));
