@@ -6,7 +6,7 @@ import { Heart } from 'lucide-react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
-
+import chart from '@/public/sizing.png'
 import {
     Drawer,
     DrawerClose,
@@ -14,6 +14,7 @@ import {
     DrawerFooter,
     DrawerTrigger,
 } from "@/components/ui/drawer"
+import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 
 function Productcard({ product, order, orderDetail, status, orderedSize }) {
     const [wishlistItems, setWishlistItems] = useState([])
@@ -467,8 +468,8 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                                                 <Button className="rounded-none w-full bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md mt-2" onClick={() => { cancelOrder(prod.id) }}>
                                                     Confrim Cancellation
                                                 </Button>
-                                                <Button className="rounded-none w-full bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md mt-2" onClick={() => {setShowConfirm(false) }}>
-                                                     Undo
+                                                <Button className="rounded-none w-full bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md mt-2" onClick={() => { setShowConfirm(false) }}>
+                                                    Undo
                                                 </Button>
                                             </div>
                                             :
@@ -514,6 +515,31 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                                                 <div className=" w-4/4 md:w-2/4 lg:w-3/4 ">
                                                     <p className="text-xl md:text-2xl lg:text-4xl font-semibold">Add {prod.productName} to cart</p>
                                                     <p className="text-lg md:text-3xl my-0 md:my-2 font-semibold text-left"> ₹{prod.isInOffer ? prod.offerPrice : prod.price}</p>
+                                                    <div className="">
+                                                        <div className="mb-4">
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild className=''>
+                                                                    <div className="flex gap-2 items-center">
+                                                                        <Image src={chart} alt='sizing chart' width={34} className='cursor-pointer' />
+                                                                        <p className="text-underline underline cursor-pointer">
+                                                                            Show Size Chart
+                                                                        </p>
+                                                                    </div>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        {/* <AlertDialogTitle>Unisex Oversized Size Chart </AlertDialogTitle> */}
+                                                                        <AlertDialogDescription>
+                                                                            <Image src={process.env.NEXT_PUBLIC_HOST + product.category.sizeChart} alt='size chart' width={768} height={768} className='w-full h-full' />
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Close</AlertDialogCancel>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </div>
+                                                    </div>
                                                     <p className="text-xl font-semibold">Select a size</p>
                                                     <div className='flex gap-1 my-2'>
                                                         <input className='hidden' type="radio" id="sizeS" name="size" value="S" onChange={() => handleSizeChange("S")} checked={selectedSize === "S"} />
