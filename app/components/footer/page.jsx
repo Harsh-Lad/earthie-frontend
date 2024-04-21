@@ -32,14 +32,14 @@ function Footer() {
         </div>
 
         <div className="third w-4/4  md:w-1/4 pl-10">
-          <p className="text-2xl font-semibold">Policies</p>
+          <p className="text-2xl font-semibold">Reach Us At</p>
           <div className="flex flex-col gap-y-2 mt-2">
             <p className="text-lg font-medium">Call us at:</p>
             <p className="text-lg font-medium">+91 8369088360</p>
             <p className="text-lg font-medium">Email us at:</p>
             <p className="text-lg font-medium">support@earthie.in</p>
             <p className="text-lg font-medium">Office Address:</p>
-            <p className="text-lg font-medium lowercase w-2/3">SHRIDHAR KUNJ PLOT NO:246-259, RSC 1A, GORAI-1, BORIVALI WEST, MUMBAI-92.</p>
+            <p className="text-lg font-medium capitalize w-2/3">SHRIDHAR KUNJ PLOT NO:246-259, RSC 1A, GORAI-1, BORIVALI WEST, MUMBAI-92.</p>
           </div>
         </div>
 
