@@ -127,27 +127,9 @@ function Checkout() {
         }
     };
 
-    // function pay() {
-    //     var options = {
-    //         // "key": 'rzp_live_pEyepar8NuQCjn', // Enter the Key ID generated from the Dashboard
-    //         "key": 'rzp_test_dhTo8WSf0CUEtv', // Enter the Key ID generated from the Dashboard
-    //         "amount": `${price}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    //         "currency": "INR",
-    //         "name": "Earthie Fashion",
-    //         "description": "Wear your indentity",
-    //         "order_id": `${orderId}`, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    //         "callback_url": `/ordersuccess?orderId=${orderId}`,
-
-    //         "theme": {
-    //             "color": "#030203"
-    //         }
-    //     };
-    //     var rzp1 = new Razorpay(options);
-    //     rzp1.open();
-
-    // }
 
     function pay() {
+        toast.success('Loading Payment Gateway! Please Wait')
         var options = {
             // "key": 'rzp_live_pEyepar8NuQCjn', // Enter the Key ID generated from the Dashboard
             "key": 'rzp_test_dhTo8WSf0CUEtv', // Enter the Key ID generated from the Dashboard

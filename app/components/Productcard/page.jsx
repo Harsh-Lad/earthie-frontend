@@ -29,6 +29,13 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
     const router = useRouter()
     const [timeoforder, setTimeoforder] = useState('')
     const [timeofDelivery, setTimeofDelivery] = useState('')
+    const [prod, setProduct] = useState()
+    const [showConfirm, setShowConfirm] = useState(false)
+
+    useEffect(() => {
+        setProduct(product)
+    }, [product])
+
 
     const fetchWishlist = async () => {
         try {
@@ -129,6 +136,9 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
             }
 
             toast.success(`${product.productName} removed from wishlist`);
+            setIsInWishlist(false)
+            window.location.reload()
+
             if (token !== null || anonymousId !== null) {
                 fetchWishlist(); // Refresh wishlist items after removal
             }
@@ -175,11 +185,12 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
 
                 if (response.ok) {
                     toast.success(`${productName} in wishlist`)
+                    setIsInWishlist(true)
                 }
-                if (response.status == 400){
+                if (response.status == 400) {
                     toast.success(`${productName} already in wishlist`)
                     return
-                }                
+                }
             }
         } catch (error) {
             console.error(error);
@@ -219,6 +230,7 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
             localStorage.setItem('anonymous_id', anonymous_id);
 
             toast.success(`${productName} in wishlist`);
+            setIsInWishlist(true)
 
         } catch (error) {
             console.error(error);
@@ -292,9 +304,10 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
             }
 
             // Update the local state to remove the product from the cart
-            setIsInCart(false);
             toast.success("Product removed from cart successfully!");
+            setIsInCart(false);
             fetchCartItems(); // Optionally, you can refresh the wishlist as well
+            window.location.reload()
 
         } catch (error) {
             console.error('Failed to remove product from cart:', error);
@@ -322,9 +335,10 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
 
                 if (response.ok) {
                     toast.success(`${productName} in Cart`)
+                    setIsInCart(true)
                 }
 
-                if (response.status == 400){
+                if (response.status == 400) {
                     toast.success(`${productName} already in Cart`)
                     return
                 }
@@ -367,9 +381,10 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                     localStorage.setItem('anonymous_id', anonymous_id);
 
                     toast.success(`${productName} in Cart`);
+                    setIsInCart(true)
                 }
 
-                if (response.status == 400){
+                if (response.status == 400) {
                     toast.success(`${productName} already in Cart`);
                     return
                 }
@@ -427,28 +442,41 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
     return (
         <div className="">
 
-            {product && (
+            {prod && (
                 <div className='h-96 w-80 shadow bg-[#f2f2f2] relative overflow-hidden my-4 mx-2'>
                     <Image
                         alt=''
-                        src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`}
-                        onClick={() => { router.push(`/product?productId=${product.id}`) }}
+                        src={`${process.env.NEXT_PUBLIC_HOST}${prod.thumbnail}`}
+                        onClick={() => { router.push(`/product?productId=${prod.id}`) }}
                         fill
                         className='cursor-pointer h-full w-full object-cover object-center'
                     />
 
                     <div className="content px-2 absolute bottom-0 w-full mb-4">
                         <div className="top w-full flex">
-                            <p className="bg-white w-[75%] px-3 py-3 text-[#030203] font-semibold">{product.productName}</p>
-                            <p className="bg-[#030203] w-[25%] px-3 py-3 text-white font-semibold text-center"> ₹{product.isInOffer ? product.offerPrice : product.price}</p>
+                            <p className="bg-white w-[75%] px-3 py-3 text-[#030203] font-semibold">{prod.productName}</p>
+                            <p className="bg-[#030203] w-[25%] px-3 py-3 text-white font-semibold text-center"> ₹{prod.isInOffer ? prod.offerPrice : prod.price}</p>
                         </div>
 
                         {order && order ?
                             <div className="">
                                 {isCancelAllowed() && status != 'cancelled' ? (
-                                    <Button className="rounded-none w-full bg-[#030203] hover:bg-[#000000] mt-2" onClick={() => { cancelOrder(product.id) }}>
-                                        Cancel Order
-                                    </Button>
+                                    <>
+                                        {showConfirm ?
+                                            <div className='flex gap-1'>
+                                                <Button className="rounded-none w-full bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md mt-2" onClick={() => { cancelOrder(prod.id) }}>
+                                                    Confrim Cancellation
+                                                </Button>
+                                                <Button className="rounded-none w-full bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md mt-2" onClick={() => {setShowConfirm(false) }}>
+                                                     Undo
+                                                </Button>
+                                            </div>
+                                            :
+                                            <Button className="rounded-none w-full bg-[#030203] hover:bg-[#000000] mt-2" onClick={() => { setShowConfirm(true) }}>
+                                                Cancel Order
+                                            </Button>
+                                        }
+                                    </>
                                 ) : (
                                     <div className="">
                                         {status == 'delivered' && isReplacedAllowed() ?
@@ -467,7 +495,7 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                             <div className="bottom">
                                 {isInCart ? (
                                     <div className=" flex gap-2">
-                                        <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(product.id, size) } else { toast.warning('Something went wrong') } }}>
+                                        <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { if (token || anonymousId) { removeFromCart(prod.id, size) } else { toast.warning('Something went wrong') } }}>
                                             Remove from Cart
                                         </Button>
                                         <Button className="w-2/4 rounded-none mt-2 bg-[#fff] hover:bg-[#f5f5f5] text-[#030203] border-2 shadow-md" onClick={() => { router.push('/cart') }} >
@@ -484,8 +512,8 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                                         <DrawerContent className="px-4 md:px-24 lg:px-48 ">
                                             <div className="px-4 w-full flex flex-col gap-3 md:gap-0 md:flex-row py-2">
                                                 <div className=" w-4/4 md:w-2/4 lg:w-3/4 ">
-                                                    <p className="text-xl md:text-2xl lg:text-4xl font-semibold">Add {product.productName} to cart</p>
-                                                    <p className="text-lg md:text-3xl my-0 md:my-2 font-semibold text-left"> ₹{product.isInOffer ? product.offerPrice : product.price}</p>
+                                                    <p className="text-xl md:text-2xl lg:text-4xl font-semibold">Add {prod.productName} to cart</p>
+                                                    <p className="text-lg md:text-3xl my-0 md:my-2 font-semibold text-left"> ₹{prod.isInOffer ? prod.offerPrice : prod.price}</p>
                                                     <p className="text-xl font-semibold">Select a size</p>
                                                     <div className='flex gap-1 my-2'>
                                                         <input className='hidden' type="radio" id="sizeS" name="size" value="S" onChange={() => handleSizeChange("S")} checked={selectedSize === "S"} />
@@ -505,9 +533,9 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
 
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <Button className="w-4/4 md:w-2/4" onClick={() => { addToCart(product.id, product.productName, selectedSize) }}>Add to Cart</Button>
+                                                        <Button className="w-4/4 md:w-2/4" onClick={() => { addToCart(prod.id, prod.productName, selectedSize) }}>Add to Cart</Button>
                                                         <DrawerClose className="w-4/4 md:w-2/4">
-                                                            <Button variant="outline" className="w-full mt-2">Cancel</Button>
+                                                            <Button variant="outline" className="w-full mt-2">Close</Button>
                                                         </DrawerClose>
                                                     </div>
                                                 </div>
@@ -517,8 +545,8 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                                                         alt=''
                                                         width={340}
                                                         height={145}
-                                                        src={`${process.env.NEXT_PUBLIC_HOST}${product.thumbnail}`}
-                                                        onClick={() => { router.push(`/product?productId=${product.id}`) }}
+                                                        src={`${process.env.NEXT_PUBLIC_HOST}${prod.thumbnail}`}
+                                                        onClick={() => { router.push(`/product?productId=${prod.id}`) }}
                                                         className='cursor-pointer aspect-auto object-cover object-center'
                                                     />
                                                 </div>
@@ -544,10 +572,10 @@ function Productcard({ product, order, orderDetail, status, orderedSize }) {
                             </div>
                             :
                             <div className="mt-2 flex items-center justify-between w-full px-3">
-                                <Button variant="secondary" className=" rounded-none bg-white shadow-lg" onClick={() => { addtoWishlist(product.id, product.productName) }}>  <Heart stroke={isInWishlist ? 'red' : 'black'} fill={isInWishlist ? 'red' : 'white'} /></Button>
+                                <Button variant="secondary" className=" rounded-none bg-white shadow-lg" onClick={() => { addtoWishlist(prod.id, prod.productName) }}>  <Heart stroke={isInWishlist ? 'red' : 'black'} fill={isInWishlist ? 'red' : 'white'} /></Button>
                                 {
-                                    product.isInOffer &&
-                                    <p className="text-red-500 bg-white py-2 px-2 font-medium">{product.offerName}</p>
+                                    prod.isInOffer &&
+                                    <p className="text-red-500 bg-white py-2 px-2 font-medium">{prod.offerName}</p>
                                 }
                             </div>
                         }
