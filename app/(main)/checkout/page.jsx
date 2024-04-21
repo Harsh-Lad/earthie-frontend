@@ -131,19 +131,14 @@ function Checkout() {
     function pay() {
         toast.success('Loading Payment Gateway! Please Wait')
         var options = {
-            // "key": 'rzp_live_pEyepar8NuQCjn', // Enter the Key ID generated from the Dashboard
-            "key": 'rzp_test_dhTo8WSf0CUEtv', // Enter the Key ID generated from the Dashboard
+            "key": 'rzp_live_pEyepar8NuQCjn', // Enter the Key ID generated from the Dashboard
+            // "key": 'rzp_test_dhTo8WSf0CUEtv', // Enter the Key ID generated from the Dashboard
             "amount": `${price}`, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "Earthie Fashion",
             "description": "Wear your identity",
             "order_id": `${orderId}`, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response) {
-                // Handler function for successful payment
-                // alert(response.razorpay_payment_id);
-                // alert(response.razorpay_order_id);
-                // alert(response.razorpay_signature);
-                // Redirect to order success page or perform any other action
                 handlePaymentSuccess(response);
             },
             "theme": {
