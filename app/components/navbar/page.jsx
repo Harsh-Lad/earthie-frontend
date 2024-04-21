@@ -85,11 +85,11 @@ function Navbar() {
             {auth ||
               <div className="">
                 {isSignupPage ? (
-                  <Button asChild variant="secondary" className="rounded-full h-9">
+                  <Button asChild variant="secondary" className="rounded-full h-9 ml-2">
                     <Link href={'/login'}>Login</Link>
                   </Button>
                 ) : (
-                  <Button asChild variant="secondary" className="rounded-full h-9">
+                  <Button asChild variant="secondary" className="rounded-full h-9 ml-2">
                     <Link href={'/signup'}>Signup</Link>
                   </Button>
                 )}
