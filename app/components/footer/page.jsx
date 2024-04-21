@@ -39,7 +39,7 @@ function Footer() {
             <p className="text-lg font-medium">Email us at:</p>
             <p className="text-lg font-medium">support@earthie.in</p>
             <p className="text-lg font-medium">Office Address:</p>
-            <p className="text-lg font-medium capitalize w-2/3">SHRIDHAR KUNJ PLOT NO:246-259, RSC 1A, GORAI-1, BORIVALI WEST, MUMBAI-92.</p>
+            <p className="text-lg font-medium capitalize w-2/3">Shridhar Kunj Plot No.246-259, RSC 1A, Gorai-1, Borivali West, Mumbai-400092.</p>
           </div>
         </div>
 
