@@ -102,29 +102,29 @@ function Navbar() {
               <SheetTrigger><LucideMenu className='text-white' /></SheetTrigger>
               <SheetContent>
                 <SheetHeader>
-                  <SheetTitle className="text-xl font-bold text-left py-2 flex items-center"><Image src={logo} width={45} height={45}/> EarthieFashion.</SheetTitle>
+                  <SheetTitle className="text-xl font-bold text-left py-2 flex items-center"><Image alt='logo' src={logo} width={45} height={45}/> EarthieFashion.</SheetTitle>
                   <SheetDescription className="flex flex-col items-start gap-y-2">
-                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                       <Link className=' hover:text-slate-200 ' href={'/'}><Shirt className="mr-2" /> Home</Link>
                     </Button>
-                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                       <Link className=' hover:text-slate-200 ' href={'/collections'}><Boxes className="mr-2" /> Collections</Link>
                     </Button>
-                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                       <Link className=' hover:text-slate-200 ' href={'/offers'}><BadgePercent className="mr-2"/> Offers</Link>
                     </Button>
-                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                       <Link className=' hover:text-slate-200 ' href={'/newarrivals'}><Triangle className="mr-2"/> New Arrivals</Link>
                     </Button>
-                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                       <Link className=' hover:text-slate-200 ' href={'/cart'}><LucideShoppingCart className='mr-2'/> Cart</Link>
                     </Button>
-                    <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                    <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                       <Link className=' hover:text-slate-200 ' href={'/wishlist'}><Heart className='mr-2'/> Wishlist</Link>
                     </Button>
                     {auth ?
                       <div className="flex flex-col items-start gap-3 w-full">
-                        <Button asChild variant='secondary' className="text-left flex justify-start w-full">
+                        <Button asChild variant='secondary' className="text-left flex justify-start w-full" onClick={() => closeSheet()}>
                           <Link href={'/orderHistory'} className='text-center'><Package className=' mr-2' /> My orders</Link>
                         </Button>
                         <Button variant='destructive' className="w-full text-left flex justify-start" onClick={() => { dispatch(logout()); localStorage.removeItem('token'); router.push('/login'); toast.success('Logged out successfully!') }}>
